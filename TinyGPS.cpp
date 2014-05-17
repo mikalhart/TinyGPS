@@ -57,6 +57,21 @@ TinyGPS::TinyGPS()
 // public methods
 //
 
+void TinyGPS::clear_fix()
+{
+  _time = GPS_INVALID_TIME;
+  _date = GPS_INVALID_DATE;
+  _latitude = GPS_INVALID_ANGLE;
+  _longitude = GPS_INVALID_ANGLE;
+  _altitude = GPS_INVALID_ALTITUDE;
+  _speed = GPS_INVALID_SPEED;
+  _course = GPS_INVALID_ANGLE;
+  _hdop = GPS_INVALID_HDOP;
+  _numsats = GPS_INVALID_SATELLITES;
+  _last_time_fix = GPS_INVALID_FIX_TIME;
+  _last_position_fix = GPS_INVALID_FIX_TIME;
+}
+
 bool TinyGPS::encode(char c)
 {
   bool valid_sentence = false;
