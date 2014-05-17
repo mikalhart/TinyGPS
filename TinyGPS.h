@@ -57,6 +57,10 @@ public:
   bool encode(char c); // process one character received from GPS
   TinyGPS &operator << (char c) {encode(c); return *this;}
 
+  // If you put the GPS module to sleep and wake it up, call this
+  // to prevent prevent receiving stale data
+  void clear_fix();
+  
   // lat/long in MILLIONTHs of a degree and age of fix in milliseconds
   // (note: versions 12 and earlier gave lat/long in 100,000ths of a degree.
   void get_position(long *latitude, long *longitude, unsigned long *fix_age = 0);
