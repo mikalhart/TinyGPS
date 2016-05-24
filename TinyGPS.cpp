@@ -25,6 +25,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 #define _GPRMC_TERM   "GPRMC"
 #define _GPGGA_TERM   "GPGGA"
+#define M_PI 3.14159265 
 
 TinyGPS::TinyGPS()
   :  _time(GPS_INVALID_TIME)
@@ -300,11 +301,11 @@ float TinyGPS::distance_between (float lat1, float long1, float lat2, float long
   // distance computation for hypothetical sphere of radius 6372795 meters.
   // Because Earth is no exact sphere, rounding errors may be up to 0.5%.
   // Courtesy of Maarten Lamers
-  float delta = radians(long1-long2);
+  float delta = (long1-long2)*M_PI/180;
   float sdlong = sin(delta);
   float cdlong = cos(delta);
-  lat1 = radians(lat1);
-  lat2 = radians(lat2);
+  lat1 = (lat1)*M_PI/180;
+  lat2 = (lat2)*M_PI/180;
   float slat1 = sin(lat1);
   float clat1 = cos(lat1);
   float slat2 = sin(lat2);
@@ -324,9 +325,9 @@ float TinyGPS::course_to (float lat1, float long1, float lat2, float long2)
   // both specified as signed decimal-degrees latitude and longitude.
   // Because Earth is no exact sphere, calculated course may be off by a tiny fraction.
   // Courtesy of Maarten Lamers
-  float dlon = radians(long2-long1);
-  lat1 = radians(lat1);
-  lat2 = radians(lat2);
+  float dlon = (long2-long1)*M_PI/180;
+  lat1 = (lat1)*M_PI/180;
+  lat2 = (lat2)*M_PI/180;
   float a1 = sin(dlon) * cos(lat2);
   float a2 = sin(lat1) * cos(lat2) * cos(dlon);
   a2 = cos(lat1) * sin(lat2) - a2;
@@ -335,7 +336,7 @@ float TinyGPS::course_to (float lat1, float long1, float lat2, float long2)
   {
     a2 += TWO_PI;
   }
-  return degrees(a2);
+  return (a2)*180/M_PI;
 }
 
 const char *TinyGPS::cardinal (float course)

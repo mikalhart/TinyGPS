@@ -1,4 +1,4 @@
-#include <SoftwareSerial.h>
+//#include <SoftwareSerial.h>
 
 #include <TinyGPS.h>
 
@@ -8,7 +8,8 @@
 */
 
 TinyGPS gps;
-SoftwareSerial ss(4, 3);
+//SoftwareSerial ss(4, 3);
+#define ss Serial1
 
 static void smartdelay(unsigned long ms);
 static void print_float(float val, float invalid, int len, int prec);
