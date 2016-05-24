@@ -24,12 +24,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #ifndef TinyGPS_h
 #define TinyGPS_h
 
-#if defined(ARDUINO) && ARDUINO >= 100
-#include "Arduino.h"
-#else
-#include "WProgram.h"
-#endif
-
 #include <stdlib.h>
 
 #define _GPS_VERSION 13 // software version of this library

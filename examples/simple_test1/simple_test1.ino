@@ -13,12 +13,18 @@ TinyGPS gps;
 
 void setup()
 {
-  Serial.begin(9600);
-  ss.begin(115200);
+  Serial.begin(115200);
+  ss.begin(4800);
   
   Serial.print("Simple TinyGPS library v. "); Serial.println(TinyGPS::library_version());
   Serial.println("by Mikal Hart");
+  Serial1.println("$PMTK314,0,1,0,5,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0*2C"); //only GPGGA and GPRMC sentences, see MTK3329/3339 Data sheet
+  
+  Serial1.println("$PMTK220,100*2F"); //10Hz update rate
+  
   Serial.println();
+  
+// http://forum.43oh.com/topic/4966-unable-to-retrieve-complete-nmea-string-from-serial-communication/
 }
 
 void loop()
@@ -26,7 +32,15 @@ void loop()
   bool newData = false;
   unsigned long chars;
   unsigned short sentences, failed;
-
+/*
+while(!gps.enccode(ss.read())){
+gb.display.println("Retrieving data");
+}
+if(gb.update()){
+//stuff
+}
+}
+*/
   // For one second we parse GPS data and report some key values
   for (unsigned long start = millis(); millis() - start < 1000;)
   {
