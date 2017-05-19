@@ -300,22 +300,22 @@ float TinyGPS::distance_between (float lat1, float long1, float lat2, float long
   // distance computation for hypothetical sphere of radius 6372795 meters.
   // Because Earth is no exact sphere, rounding errors may be up to 0.5%.
   // Courtesy of Maarten Lamers
-  float delta = radians(long1-long2);
-  float sdlong = sin(delta);
-  float cdlong = cos(delta);
+  // Optimization based on https://github.com/infusion/GPS.js
+
+  float hLat = radians(lat2 - lat1) * 0.5; // Half of lat difference
+  float hLon = radians(lon2 - lon1) * 0.5; // Half of lon difference
+
   lat1 = radians(lat1);
   lat2 = radians(lat2);
-  float slat1 = sin(lat1);
+
+  float shLat = sin(hLat);
+  float shLon = sin(hLon);
   float clat1 = cos(lat1);
-  float slat2 = sin(lat2);
   float clat2 = cos(lat2);
-  delta = (clat1 * slat2) - (slat1 * clat2 * cdlong); 
-  delta = sq(delta); 
-  delta += sq(clat2 * sdlong); 
-  delta = sqrt(delta); 
-  float denom = (slat1 * slat2) + (clat1 * clat2 * cdlong); 
-  delta = atan2(delta, denom); 
-  return delta * 6372795; 
+
+  float tmp = shLat * shLat + clat1 * clat2 * shLon * shLon;
+
+  return 6372795 * 2 * atan2(sqrt(tmp), sqrt(1.0 - tmp)); 
 }
 
 float TinyGPS::course_to (float lat1, float long1, float lat2, float long2) 
@@ -327,8 +327,9 @@ float TinyGPS::course_to (float lat1, float long1, float lat2, float long2)
   float dlon = radians(long2-long1);
   lat1 = radians(lat1);
   lat2 = radians(lat2);
-  float a1 = sin(dlon) * cos(lat2);
-  float a2 = sin(lat1) * cos(lat2) * cos(dlon);
+  float clat2 = cos(lat2);
+  float a1 = sin(dlon) * clat2;
+  float a2 = sin(lat1) * clat2 * cos(dlon);
   a2 = cos(lat1) * sin(lat2) - a2;
   a2 = atan2(a1, a2);
   if (a2 < 0.0)
@@ -342,7 +343,7 @@ const char *TinyGPS::cardinal (float course)
 {
   static const char* directions[] = {"N", "NNE", "NE", "ENE", "E", "ESE", "SE", "SSE", "S", "SSW", "SW", "WSW", "W", "WNW", "NW", "NNW"};
 
-  int direction = (int)((course + 11.25f) / 22.5f);
+  int direction = (int)((course + 731.25f) / 22.5f); // 731.25 is 720+360/(2*16) to handle 2 negative revolutions (get chopped by modulo anyway)
   return directions[direction % 16];
 }
 
