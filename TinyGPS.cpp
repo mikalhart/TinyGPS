@@ -36,6 +36,7 @@ TinyGPS::TinyGPS()
   ,  _course(GPS_INVALID_ANGLE)
   ,  _hdop(GPS_INVALID_HDOP)
   ,  _numsats(GPS_INVALID_SATELLITES)
+  ,  _fix_type(GPS_INVALID_FIX_TYPE)
   ,  _last_time_fix(GPS_INVALID_FIX_TIME)
   ,  _last_position_fix(GPS_INVALID_FIX_TIME)
   ,  _parity(0)
@@ -195,6 +196,7 @@ bool TinyGPS::term_complete()
           _longitude = _new_longitude;
           _numsats   = _new_numsats;
           _hdop      = _new_hdop;
+	  _fix_type  = _new_fix_type;
           break;
         }
 
@@ -261,6 +263,7 @@ bool TinyGPS::term_complete()
       _new_date = gpsatol(_term);
       break;
     case COMBINE(_GPS_SENTENCE_GPGGA, 6): // Fix data (GPGGA)
+      _new_fix_type = _term[0];
       _gps_data_good = _term[0] > '0';
       break;
     case COMBINE(_GPS_SENTENCE_GPGGA, 7): // Satellites used (GPGGA)

@@ -48,7 +48,8 @@ public:
     GPS_INVALID_ALTITUDE = 999999999,  GPS_INVALID_DATE = 0,
     GPS_INVALID_TIME = 0xFFFFFFFF,		 GPS_INVALID_SPEED = 999999999, 
     GPS_INVALID_FIX_TIME = 0xFFFFFFFF, GPS_INVALID_SATELLITES = 0xFF,
-    GPS_INVALID_HDOP = 0xFFFFFFFF
+    GPS_INVALID_HDOP = 0xFFFFFFFF,
+    GPS_INVALID_FIX_TYPE = 0xFF
   };
 
   static const float GPS_INVALID_F_ANGLE, GPS_INVALID_F_ALTITUDE, GPS_INVALID_F_SPEED;
@@ -78,6 +79,9 @@ public:
 
   // horizontal dilution of precision in 100ths
   inline unsigned long hdop() { return _hdop; }
+
+  // Fix type, as reported in the GPGGA sentence
+  inline unsigned char fix_type() { return _fix_type; }
 
   void f_get_position(float *latitude, float *longitude, unsigned long *fix_age = 0);
   void crack_datetime(int *year, byte *month, byte *day, 
@@ -112,6 +116,7 @@ private:
   unsigned long  _course, _new_course;
   unsigned long  _hdop, _new_hdop;
   unsigned short _numsats, _new_numsats;
+  unsigned char _fix_type, _new_fix_type;
 
   unsigned long _last_time_fix, _new_time_fix;
   unsigned long _last_position_fix, _new_position_fix;
