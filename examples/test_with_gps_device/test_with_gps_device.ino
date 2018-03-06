@@ -15,6 +15,7 @@ static void print_float(float val, float invalid, int len, int prec);
 static void print_int(unsigned long val, unsigned long invalid, int len);
 static void print_date(TinyGPS &gps);
 static void print_str(const char *str, int len);
+static void print_fix_type(unsigned char c, unsigned int len);
 
 void setup()
 {
@@ -23,11 +24,11 @@ void setup()
   Serial.print("Testing TinyGPS library v. "); Serial.println(TinyGPS::library_version());
   Serial.println("by Mikal Hart");
   Serial.println();
-  Serial.println("Sats HDOP Latitude  Longitude  Fix  Date       Time     Date Alt    Course Speed Card  Distance Course Card  Chars Sentences Checksum");
-  Serial.println("          (deg)     (deg)      Age                      Age  (m)    --- from GPS ----  ---- to London  ----  RX    RX        Fail");
-  Serial.println("-------------------------------------------------------------------------------------------------------------------------------------");
+  Serial.println("Sats HDOP Latitude  Longitude  Fix  Fix  Date       Time     Date Alt    Course Speed Card  Distance Course Card  Chars Sentences Checksum");
+  Serial.println("          (deg)     (deg)      Type Age                      Age  (m)    --- from GPS ----  ---- to London  ----  RX    RX        Fail");
+  Serial.println("------------------------------------------------------------------------------------------------------------------------------------------");
 
-  ss.begin(4800);
+  ss.begin(9600);
 }
 
 void loop()
@@ -42,6 +43,7 @@ void loop()
   gps.f_get_position(&flat, &flon, &age);
   print_float(flat, TinyGPS::GPS_INVALID_F_ANGLE, 10, 6);
   print_float(flon, TinyGPS::GPS_INVALID_F_ANGLE, 11, 6);
+  print_fix_type(gps.fix_type(), 5);
   print_int(age, TinyGPS::GPS_INVALID_AGE, 5);
   print_date(gps);
   print_float(gps.f_altitude(), TinyGPS::GPS_INVALID_F_ALTITUDE, 7, 2);
@@ -133,3 +135,26 @@ static void print_str(const char *str, int len)
     Serial.print(i<slen ? str[i] : ' ');
   smartdelay(0);
 }
+
+static void print_fix_type(unsigned char c, unsigned int len)
+{
+  switch(c)
+  {
+    case '1': Serial.print("GPS "); break;
+    case '2': Serial.print("DGPS"); break;
+    case '3': Serial.print("PPS"); break;
+    case '4': Serial.print("RTK "); break;
+    case '5': Serial.print("FRTK"); break;
+    case '6': Serial.print("EST "); break;
+    case '7': Serial.print("MAN "); break;
+    case '8': Serial.print("SIM "); break;
+    default:  Serial.print("*** "); break;
+  }
+  
+  for (int i = 4; i < len; i++)
+  {
+    Serial.print(" ");
+  }
+  smartdelay(0);
+}
+
