@@ -23,8 +23,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 #include "TinyGPS.h"
 
-#define _GPRMC_TERM   "GPRMC"
-#define _GPGGA_TERM   "GPGGA"
+#define _GPRMC_TERM   "__RMC"
+#define _GPGGA_TERM   "__GGA"
 
 TinyGPS::TinyGPS()
   :  _time(GPS_INVALID_TIME)
@@ -287,7 +287,7 @@ long TinyGPS::gpsatol(const char *str)
 
 int TinyGPS::gpsstrcmp(const char *str1, const char *str2)
 {
-  while (*str1 && *str1 == *str2)
+  while (*str1 && (*str1 == '_' || *str1 == *str2))
     ++str1, ++str2;
   return *str1;
 }
