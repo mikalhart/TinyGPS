@@ -346,14 +346,33 @@ const char *TinyGPS::cardinal (float course)
   return directions[direction % 16];
 }
 
+void TinyGPS::get_lat_lon(long *latitude, long *longitude)
+{
+  if (latitude) 
+  {
+    *latitude = _latitude;
+  }
+
+  if (longitude)
+  {
+    *longitude = _longitude;
+  }
+}
+
+void TinyGPS::get_fix_age(unsigned long *fix_age)
+{
+  if (fix_age)
+  {
+    *fix_age = (_last_position_fix == GPS_INVALID_FIX_TIME) ? GPS_INVALID_AGE : millis() - _last_position_fix;
+  }
+}
+
 // lat/long in MILLIONTHs of a degree and age of fix in milliseconds
 // (note: versions 12 and earlier gave this value in 100,000ths of a degree.
 void TinyGPS::get_position(long *latitude, long *longitude, unsigned long *fix_age)
 {
-  if (latitude) *latitude = _latitude;
-  if (longitude) *longitude = _longitude;
-  if (fix_age) *fix_age = _last_position_fix == GPS_INVALID_FIX_TIME ? 
-   GPS_INVALID_AGE : millis() - _last_position_fix;
+  get_lat_lon(latitude, longitude);
+  get_fix_age(fix_age);
 }
 
 // date as ddmmyy, time as hhmmsscc, and age in milliseconds
@@ -367,10 +386,19 @@ void TinyGPS::get_datetime(unsigned long *date, unsigned long *time, unsigned lo
 
 void TinyGPS::f_get_position(float *latitude, float *longitude, unsigned long *fix_age)
 {
-  long lat, lon;
-  get_position(&lat, &lon, fix_age);
-  *latitude = lat == GPS_INVALID_ANGLE ? GPS_INVALID_F_ANGLE : (lat / 1000000.0);
-  *longitude = lat == GPS_INVALID_ANGLE ? GPS_INVALID_F_ANGLE : (lon / 1000000.0);
+  get_lat_lon(latitude, longitude);
+
+  if (latitude) 
+  {
+    *latitude = (lat == GPS_INVALID_ANGLE) ? GPS_INVALID_F_ANGLE : (lat / 1000000.0);
+  }
+
+  if (longitude)
+  {
+    *longitude = (lat == GPS_INVALID_ANGLE) ? GPS_INVALID_F_ANGLE : (lon / 1000000.0);
+  }
+
+  get_fix_age(fix_age);
 }
 
 void TinyGPS::crack_datetime(int *year, byte *month, byte *day, 
