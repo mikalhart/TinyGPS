@@ -134,6 +134,8 @@ private:
 #endif
 
   // internal utilities
+  void get_lat_lon(long *latitude, long *longitude);
+  void get_fix_age(unsigned long *fix_age);
   int from_hex(char a);
   unsigned long parse_decimal();
   unsigned long parse_degrees();
