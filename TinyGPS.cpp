@@ -395,7 +395,7 @@ void TinyGPS::f_get_position(float *latitude, float *longitude, unsigned long *f
 
   if (longitude)
   {
-    *longitude = (lat == GPS_INVALID_ANGLE) ? GPS_INVALID_F_ANGLE : (lon / 1000000.0);
+    *longitude = (lon == GPS_INVALID_ANGLE) ? GPS_INVALID_F_ANGLE : (lon / 1000000.0);
   }
 
   get_fix_age(fix_age);
